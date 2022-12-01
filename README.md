@@ -14,6 +14,8 @@ git clone https://github.com/MyristicaFragrans/DockerSecurityLab
 3. You need [Vagrant](vagrantup.com/) installed. Vagrant will handle all other
 installations and prerequisites.
 
+I am using Vagrant since it makes Virtual Machine set-up super easy. These guides will work on any host.
+
 ## 01: Binds Escalation
 Go to [Binds Escalation](01_Binds_Escalation/Binds_Escalation.md) to learn how
 to use Docker's `--mount` to gain root access to a machine.
