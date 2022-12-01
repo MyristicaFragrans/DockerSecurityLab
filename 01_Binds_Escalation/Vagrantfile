@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<-SCRIPT
+cd /tmp
+
+echo Downloading Docker Engine
+curl -sL https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/containerd.io_1.6.10-1_amd64.deb > containerd.io.deb
+curl -sL https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce-cli_20.10.21~3-0~ubuntu-jammy_amd64.deb > docker-ce-cli.deb
+curl -sL https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce_20.10.21~3-0~ubuntu-jammy_amd64.deb > docker-ce.deb
+
+echo Installing Docker Engine
+sudo dpkg -i ./containerd.io.deb \
+  ./docker-ce.deb \
+  ./docker-ce-cli.deb
+
+echo Adding unprivileged user
+useradd -m -s /bin/bash -G docker -U user -u 666 -p user
+echo -e "password\npassword" | passwd user
+cp -pr /home/vagrant/.ssh /home/user
+chmod -R 700 /home/user/.ssh
+chown -R user:user /home/user/.ssh
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  VAGRANT_COMMAND = ARGV[0]
+  if VAGRANT_COMMAND == "ssh"
+    config.ssh.username = 'user'
+  end
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.provision "shell", inline: $script
+end
